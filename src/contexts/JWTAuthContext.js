@@ -71,11 +71,11 @@ const AuthContext = createContext({
 export const AuthProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 
-	const login = async (email, password) => {
+	const login = async (email, password, remember) => {
         const response = await API.post(apiEndPoint.login, { email, password });
 		const { token, user } = response;
-        AuthStorage.setStorageData(AuthStorage.STORAGEKEY.access_token, token)
-        AuthStorage.setStorageJsonData(AuthStorage.STORAGEKEY.userData, user)
+        AuthStorage.setStorageData(AuthStorage.STORAGEKEY.access_token, token, remember)
+        AuthStorage.setStorageJsonData(AuthStorage.STORAGEKEY.userData, user, remember)
 
 		dispatch({ type: "LOGIN", payload: { user } });
 	};

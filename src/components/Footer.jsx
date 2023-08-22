@@ -1,4 +1,4 @@
-import { AppBar, Button, ThemeProvider, Toolbar, styled, useTheme } from "@mui/material";
+import { AppBar,  ThemeProvider, Toolbar, styled, useTheme } from "@mui/material";
 import useSettings from "../hooks/useSettings";
 import { topBarHeight } from "../utils/constant";
 import { Paragraph, Span } from "./Typography";
@@ -50,7 +50,7 @@ const Footer = () => {
 						<Span sx={{ m: "auto" }}></Span>
 						<Paragraph sx={{ m: 0 }}>
 							Design and Developed by{" "}
-							<a href="http://karmadhi.com" target="_blank">
+							<a href="http://karmadhi.com" target="_blank" rel="noreferrer">
 								Karmadhi
 							</a>
 						</Paragraph>

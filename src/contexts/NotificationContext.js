@@ -1,5 +1,4 @@
 import { createContext, useEffect, useReducer } from 'react';
-import axios from 'axios';
 import shortId from 'shortid';
 
 const reducer = (state, action) => {

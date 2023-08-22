@@ -47,6 +47,7 @@ const get = (url, params) =>
 
 const put = (url, data, headers = {}) => instance.put(url, data, headers);
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
 	post,
 	destroy,

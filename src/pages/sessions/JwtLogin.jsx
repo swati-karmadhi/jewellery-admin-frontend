@@ -63,7 +63,7 @@ const JwtLogin = () => {
 	const handleFormSubmit = async (values) => {
 		setLoading(true);
 		try {
-			await login(values.email, values.password);
+			await login(values.email, values.password, values.remember);
 			navigate("/");
 		} catch (e) {
 			setLoading(false);

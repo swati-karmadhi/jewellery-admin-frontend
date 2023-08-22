@@ -24,7 +24,7 @@ class AuthStorage {
 	}
 
 	static getToken() {
-		return localStorage.getItem(this.STORAGEKEY.token)
+		return localStorage.getItem(this.STORAGEKEY.access_token)
 			? localStorage.getItem(this.STORAGEKEY.access_token)
 			: sessionStorage.getItem(this.STORAGEKEY.access_token);
 	}

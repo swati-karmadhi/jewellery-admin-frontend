@@ -38,8 +38,6 @@ const LabMaster = () => {
 		setOpen(!open);
 	};
 
-	const toggleConfirmDialog = (labId = "") => {};
-
 	const handleEdit = (lab) => {
 		setSelectedLabData(lab);
 		togglePopup();
@@ -98,7 +96,7 @@ const LabMaster = () => {
 					</TableBody>
 				</StyledTable>
 			</Box>
-			<StyledAddButton color="secondary" aria-label="Add" className="button">
+			<StyledAddButton color="secondary" aria-label="Add" className="button" onClick={togglePopup}>
 				<Icon>add</Icon>
 			</StyledAddButton>
 			<LabMasterDetails open={open} togglePopup={togglePopup} labData={selectedLabData} />
