@@ -6,7 +6,7 @@ import styled from "@emotion/styled";
 import { API, HELPER } from "../../../../services";
 import { apiEndPoint } from "../../../../constants/routesList";
 
-// inital data
+// initial data
 const initialValues = {
 	id: "",
 	labName: "",
@@ -55,7 +55,7 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 					HELPER.toaster.success("Record created");
 					togglePopup();
 				})
-				.catch((e) => HELPER.toaster.error(e));
+				.catch((e) => HELPER.toaster.error(e.errors.message));
 		} else {
 			API.put(`${apiEndPoint.lab}/${values.id}`, values)
 				.then(() => {
