@@ -1,27 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Breadcrumb, Container, StyledAddButton } from "../../../../components";
-import { Box, Icon, IconButton, styled, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Breadcrumb, Container, StyledAddButton, StyledTable } from "../../../../components";
+import { Box, Icon, IconButton, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { API, HELPER } from "../../../../services";
 import { apiEndPoint, pageRoutes } from "../../../../constants/routesList";
 import LabMasterDetails from "./LabMasterDetails";
-
-const StyledTable = styled(Table)(() => ({
-	whiteSpace: "pre",
-	"& thead": {
-		"& tr": { "& th": { paddingLeft: 0, paddingRight: 0 } },
-	},
-	"& tbody": {
-		"& tr": { "& td": { paddingLeft: 0, textTransform: "capitalize" } },
-	},
-}));
 
 const LabMaster = () => {
 	const [tableData, setTableData] = useState([]);
 	const [open, setOpen] = useState(false);
 	const [selectedLabData, setSelectedLabData] = useState(null);
+    const url = apiEndPoint.lab
 
 	const getTableData = () => {
-		API.get(apiEndPoint.lab).then((response) => {
+		API.get(url).then((response) => {
 			setTableData(response);
 		});
 	};
@@ -45,7 +36,7 @@ const LabMaster = () => {
 
 	const handleDelete = (labId) => {
 		HELPER.sweetAlert.delete().then(() => {
-			API.destroy(`${apiEndPoint.lab}/${labId}`)
+			API.destroy(`${url}/${labId}`)
 				.then(() => {
 					HELPER.toaster.success("Record Deleted");
 					getTableData();

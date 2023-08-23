@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, TextareaAutosize } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import * as Yup from "yup";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import styled from "@emotion/styled";
 import { API, HELPER } from "../../../../services";
 import { apiEndPoint } from "../../../../constants/routesList";
@@ -63,8 +63,8 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 					togglePopup();
 				})
 				.catch((e) => {
-                    HELPER.toaster.error(e.errors.message)
-                });
+					HELPER.toaster.error(e.errors.message);
+				});
 		}
 	};
 
@@ -86,7 +86,7 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 
 	return (
 		<Dialog open={open} onClose={togglePopup} aria-labelledby="form-dialog-title">
-			<DialogTitle id="form-dialog-title">Add Lab</DialogTitle>
+			<DialogTitle id="form-dialog-title">{formikProps.values.id === "" ? "Add" : "Edit"} Lab</DialogTitle>
 			<DialogContent>
 				<form onSubmit={formikProps.handleSubmit}>
 					<TextField
@@ -108,6 +108,7 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 						size="small"
 						name="details"
 						type="text"
+                        maxLength={255}
 						minRows={3}
 						maxRows={3}
 						placeholder="Details"
@@ -121,7 +122,7 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 						</Button>
 
 						<Button type="submit" color="primary">
-							Add
+							Save
 						</Button>
 					</DialogActions>
 				</form>

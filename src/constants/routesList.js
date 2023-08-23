@@ -1,6 +1,7 @@
 export const apiEndPoint = {
 	login: "login",
 	lab: "lab",
+    shape:"shape"
 };
 
 export const pageRoutes = {
