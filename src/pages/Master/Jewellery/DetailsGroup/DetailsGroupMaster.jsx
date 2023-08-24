@@ -9,7 +9,7 @@ const DetailsGroupMaster = () => {
 	const [tableData, setTableData] = useState([]);
 	const [open, setOpen] = useState(false);
 	const [selectedGroupData, setSelectedGroupData] = useState(null);
-    const url = apiEndPoint.detailsGroup
+    const url = apiEndPoint.productDetailsGroup
 
     const getTableData = () => {
 		API.get(url).then((response) => {

@@ -2,7 +2,8 @@ export const apiEndPoint = {
 	login: "login",
 	lab: "lab",
 	shape: "shape",
-	detailsGroup: "productDetailsGroup",
+	productDetailsGroup: "productDetailsGroup",
+	productDetails: "productDetails",
 };
 
 export const pageRoutes = {

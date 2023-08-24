@@ -42,7 +42,7 @@ const ShapeMaster = () => {
 					HELPER.toaster.success("Record Deleted");
 					getTableData();
 				})
-				.catch((e) => HELPER.toaster.error("Error " + e));
+				.catch((e) => HELPER.toaster.error("Error " + JSON.stringify(e)));
 		});
 	};
 

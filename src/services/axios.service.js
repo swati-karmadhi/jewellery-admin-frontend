@@ -28,6 +28,10 @@ instance.interceptors.response.use(
 		return response.data.success ? response.data.data : response.error;
 	},
 	(error) => {
+        if(error.response.data.status === 401){
+            AuthStorage.deauthenticateUser();
+        }
+
 		return Promise.reject({
 			errors: error.response.data.error,
 			status: error.response.data.status,

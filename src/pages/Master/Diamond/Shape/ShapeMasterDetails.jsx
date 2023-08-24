@@ -208,7 +208,9 @@ const ShapeMasterDetails = ({ open, togglePopup, shapeData }) => {
 												}),
 											}}
 											src={URL.createObjectURL(formikProps.values.image)}
-											// alt={<Icon>photo_camera</Icon>}
+											onError={(e) => {
+												e.target.src = "/assets/camera.svg";
+											}}
 										/>
 									) : (
 										<Icon>photo_camera</Icon>

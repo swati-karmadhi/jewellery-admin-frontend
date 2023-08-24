@@ -17,7 +17,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const DetailsGroupMasterDetails = ({ open, togglePopup, groupData }) => {
-	const url = apiEndPoint.detailsGroup;
+	const url = apiEndPoint.productDetailsGroup;
 	const handleFormSubmit = async (values) => {
 		if (values.id === "") {
 			API.post(url, values)
