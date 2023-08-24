@@ -161,14 +161,6 @@ const DetailsMaster = () => {
 					</IconButton>
 				</Tooltip>
 			</Box>
-
-			{/* <Box width="100%" overflow="auto">
-				<AutoComplete
-					options={suggestions}
-					getOptionLabel={(option) => option.label}
-					renderInput={(params) => <TextField {...params} label="Combo box" variant="outlined" fullWidth />}
-				/>
-			</Box> */}
 			<Box width="100%" overflow="auto">
 				<StyledTable>
 					<TableHead>
@@ -240,7 +232,7 @@ const DetailsMaster = () => {
 			</Tooltip>
 			<Dialog open={openSearch} onClose={togglePopupSearch} aria-labelledby="form-dialog-title">
 				<DialogTitle id="form-dialog-title">Search Filter</DialogTitle>
-				<DialogContent>
+				<DialogContent sx={{ pb: 1 }}>
 					<AutoComplete
 						sx={{ mt: 1 }}
 						options={productGroup}
@@ -251,7 +243,7 @@ const DetailsMaster = () => {
 						onChange={(e, value) => setSelectedGroup(value || null)}
 					/>
 				</DialogContent>
-				<DialogActions>
+				<DialogActions sx={{ px: 3, pb: 2 }}>
 					<Button variant="outlined" color="secondary" onClick={togglePopupSearch}>
 						Cancel
 					</Button>

@@ -87,7 +87,7 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 	return (
 		<Dialog open={open} onClose={togglePopup} aria-labelledby="form-dialog-title">
 			<DialogTitle id="form-dialog-title">{formikProps.values.id === "" ? "Add" : "Edit"} Lab</DialogTitle>
-			<DialogContent>
+			<DialogContent sx={{ pb: 1 }}>
 				<form onSubmit={formikProps.handleSubmit}>
 					<TextField
 						fullWidth={true}
@@ -108,7 +108,7 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 						size="small"
 						name="details"
 						type="text"
-                        maxLength={255}
+						maxLength={255}
 						minRows={3}
 						maxRows={3}
 						placeholder="Details"
@@ -116,17 +116,17 @@ const LabMasterDetails = ({ open, togglePopup, labData }) => {
 						onChange={formikProps.handleChange}
 						sx={{ mb: 1.5 }}
 					/>
-					<DialogActions>
-						<Button variant="outlined" color="secondary" onClick={togglePopup}>
-							Cancel
-						</Button>
-
-						<Button type="submit" color="primary">
-							Save
-						</Button>
-					</DialogActions>
 				</form>
 			</DialogContent>
+			<DialogActions sx={{ px: 3, pb: 2 }}>
+				<Button variant="outlined" color="secondary" onClick={togglePopup}>
+					Cancel
+				</Button>
+
+				<Button type="submit" color="primary">
+					Save
+				</Button>
+			</DialogActions>
 		</Dialog>
 	);
 };

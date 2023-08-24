@@ -6,7 +6,7 @@ import { API, HELPER } from "../../../../services";
 import { apiEndPoint } from "../../../../constants/routesList";
 import { useFormik } from "formik";
 import { NumericFormat } from "react-number-format";
-import * as CONFIG from "../../../../constants/config";
+import { StyledTextarea } from "../../../../components";
 
 // inital data
 const initialValues = {
@@ -41,35 +41,6 @@ const validationSchema = Yup.object().shape({
 		})
 		.test("FILE_SIZE", "Max file size 1MB", (value) => !value || (value && value.size <= 1048576)),
 });
-
-const StyledTextarea = styled(TextareaAutosize)(
-	({ theme }) => `
-    width: 100%;
-    font-family: IBM Plex Sans, sans-serif;
-    font-size: 0.875rem;
-    font-weight: 400;
-    line-height: 1.5;
-    padding: 12px;
-    border-radius: 5px 5px 0 5px;
-    // color: ${theme.palette.mode === "dark" ? "#afb8c1" : "#24292f"};
-    // background: ${theme.palette.mode === "dark" ? "#24292f" : "#fff"};
-    border: 1px solid #0000003b;
-  
-    &:hover {
-      border-color: #34314c;
-    }
-  
-    &:focus {
-      border-color: '#1976D2';
-      box-shadow: 0 0 0 2px #1976D2;
-    }
-  
-    // firefox
-    &:focus-visible {
-      outline: 0;
-    }
-  `
-);
 
 const ShapeMasterDetails = ({ open, togglePopup, shapeData }) => {
 	const url = apiEndPoint.shape;
@@ -123,7 +94,7 @@ const ShapeMasterDetails = ({ open, togglePopup, shapeData }) => {
 	return (
 		<Dialog open={open} onClose={togglePopup} aria-labelledby="form-dialog-title">
 			<DialogTitle id="form-dialog-title">{formikProps.values.id === "" ? "Add" : "Edit"} Shape</DialogTitle>
-			<DialogContent>
+			<DialogContent sx={{pb:1}}>
 				<form onSubmit={formikProps.handleSubmit}>
 					<TextField
 						fullWidth={true}
@@ -167,71 +138,71 @@ const ShapeMasterDetails = ({ open, togglePopup, shapeData }) => {
 						value={formikProps.values.description}
 						onChange={formikProps.handleChange}
 					/>
-					<DialogActions sx={{ justifyContent: "space-between", pl: 0 }}>
-						<Box sx={{ display: "flex", alignContent: "center", flexWrap: "unset" }}>
-							<TextField
-								id="icon-button-file"
-								fullWidth={true}
-								size="small"
-								type="file"
-								name="image"
-								inputProps={{ accept: "image/*" }}
-								sx={{ mt: 1, mb: 2, display: "none" }}
-								onChange={(e) => {
-									formikProps.setFieldValue("image", e.currentTarget.files[0]);
-								}}
-								onBlur={formikProps.handleBlur}
-								helperText={formikProps.touched.image && formikProps.errors.image}
-								error={Boolean(formikProps.errors.image && formikProps.touched.image)}
-							/>
-							<label htmlFor="icon-button-file">
-								<IconButton
-									color="primary"
-									id="image"
-									component="span"
-									className="button"
-									onBlur={formikProps.handleBlur}
-									aria-label="Upload picture"
-									disableRipple={true}
-								>
-									{formikProps.values.image && formikProps.values.image !== null ? (
-										<Box
-											id="image"
-											component="img"
-											sx={{
-												height: 50,
-												width: 50,
-												maxHeight: { xs: 25, md: 50 },
-												maxWidth: { xs: 25, md: 50 },
-												...(Boolean(formikProps.errors.image && formikProps.touched.image) && {
-													border: "2px solid #FF3D57",
-												}),
-											}}
-											src={URL.createObjectURL(formikProps.values.image)}
-											onError={(e) => {
-												e.target.src = "/assets/camera.svg";
-											}}
-										/>
-									) : (
-										<Icon>photo_camera</Icon>
-									)}
-								</IconButton>
-							</label>
-							{Boolean(formikProps.errors.image && formikProps.touched.image) && (
-								<p style={{ color: "#FF3D57", fontSize: "12px" }}>{formikProps.touched.image && formikProps.errors.image}</p>
-							)}
-						</Box>
-						<Box>
-							<Button variant="outlined" color="secondary" onClick={togglePopup}>
-								Cancel
-							</Button>
-							<Button type="submit" color="primary">
-								Save
-							</Button>
-						</Box>
-					</DialogActions>
 				</form>
 			</DialogContent>
+			<DialogActions sx={{ justifyContent: "space-between", px:3, pb:2 }}>
+				<Box sx={{ display: "flex", alignContent: "center", flexWrap: "unset" }}>
+					<TextField
+						id="icon-button-file"
+						fullWidth={true}
+						size="small"
+						type="file"
+						name="image"
+						inputProps={{ accept: "image/*" }}
+						sx={{ mt: 1, mb: 2, display: "none" }}
+						onChange={(e) => {
+							formikProps.setFieldValue("image", e.currentTarget.files[0]);
+						}}
+						onBlur={formikProps.handleBlur}
+						helperText={formikProps.touched.image && formikProps.errors.image}
+						error={Boolean(formikProps.errors.image && formikProps.touched.image)}
+					/>
+					<label htmlFor="icon-button-file">
+						<IconButton
+							color="primary"
+							id="image"
+							component="span"
+							className="button"
+							onBlur={formikProps.handleBlur}
+							aria-label="Upload picture"
+							disableRipple={true}
+						>
+							{formikProps.values.image && formikProps.values.image !== null ? (
+								<Box
+									id="image"
+									component="img"
+									sx={{
+										height: 50,
+										width: 50,
+										maxHeight: { xs: 25, md: 50 },
+										maxWidth: { xs: 25, md: 50 },
+										...(Boolean(formikProps.errors.image && formikProps.touched.image) && {
+											border: "2px solid #FF3D57",
+										}),
+									}}
+									src={URL.createObjectURL(formikProps.values.image)}
+									onError={(e) => {
+										e.target.src = "/assets/camera.svg";
+									}}
+								/>
+							) : (
+								<Icon>photo_camera</Icon>
+							)}
+						</IconButton>
+					</label>
+					{Boolean(formikProps.errors.image && formikProps.touched.image) && (
+						<p style={{ color: "#FF3D57", fontSize: "12px" }}>{formikProps.touched.image && formikProps.errors.image}</p>
+					)}
+				</Box>
+				<Box>
+					<Button variant="outlined" color="secondary" onClick={togglePopup}>
+						Cancel
+					</Button>
+					<Button type="submit" color="primary">
+						Save
+					</Button>
+				</Box>
+			</DialogActions>
 		</Dialog>
 	);
 };
