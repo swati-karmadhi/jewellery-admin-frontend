@@ -11,7 +11,7 @@ const CategoryMaster = () => {
 	const [tableDataCount, setTableDataCount] = useState(0);
 	const [tableData, setTableData] = useState([]);
 	const [open, setOpen] = useState(false);
-	const [selectedDetailData, setSelectedDetailData] = useState(null);
+	const [selectedCategoryData, setSelectedCategoryData] = useState(null);
 	const url = apiEndPoint.category;
 
 	const handleChangePage = (_, newPage) => {
@@ -25,8 +25,8 @@ const CategoryMaster = () => {
 		getTableData(0, +event.target.value);
 	};
 
-	const getTableData = () => {
-		API.get(url, { page, rowsPerPage }).then((response) => {
+	const getTableData = (pg = page, rpp = rowsPerPage) => {
+		API.get(url, { page: pg, rowsPerPage: rpp }).then((response) => {
 			setTableDataCount(response.count);
 			setTableData(response.rows);
 		});
@@ -39,13 +39,13 @@ const CategoryMaster = () => {
 	const togglePopup = () => {
 		if (open) {
 			getTableData();
-			setSelectedDetailData(null);
+			setSelectedCategoryData(null);
 		}
 		setOpen(!open);
 	};
 
 	const handleEdit = (data) => {
-		setSelectedDetailData(data);
+		setSelectedCategoryData(data);
 		togglePopup();
 	};
 
