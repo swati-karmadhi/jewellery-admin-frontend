@@ -93,14 +93,14 @@ const DetailsMaster = () => {
 		setOpenSearch(!openSearch);
 	};
 
-	const handleEdit = (lab) => {
-		setSelectedDetailData(lab);
+	const handleEdit = (data) => {
+		setSelectedDetailData(data);
 		togglePopup();
 	};
 
-	const handleDelete = (labId) => {
+	const handleDelete = (id) => {
 		HELPER.sweetAlert.delete().then(() => {
-			API.destroy(`${url}/${labId}`)
+			API.destroy(`${url}/${id}`)
 				.then(() => {
 					HELPER.toaster.success("Record Deleted");
 					getTableData();

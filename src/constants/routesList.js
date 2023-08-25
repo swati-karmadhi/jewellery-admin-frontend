@@ -4,6 +4,7 @@ export const apiEndPoint = {
 	shape: "shape",
 	productDetailsGroup: "productDetailsGroup",
 	productDetails: "productDetails",
+	category: "category",
 };
 
 export const pageRoutes = {
