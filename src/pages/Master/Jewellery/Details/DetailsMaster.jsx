@@ -20,45 +20,9 @@ import {
 import { Breadcrumb, Container, StyledAddButton, StyledTable } from "../../../../components";
 import { apiEndPoint, pageRoutes } from "../../../../constants/routesList";
 import { API, HELPER } from "../../../../services";
-import { configure } from "@testing-library/react";
 import styled from "@emotion/styled";
-
-const suggestions = [
-	{ label: "Afghanistan" },
-	{ label: "Aland Islands" },
-	{ label: "Albania" },
-	{ label: "Algeria" },
-	{ label: "American Samoa" },
-	{ label: "Andorra" },
-	{ label: "Angola" },
-	{ label: "Anguilla" },
-	{ label: "Antarctica" },
-	{ label: "Antigua and Barbuda" },
-	{ label: "Argentina" },
-	{ label: "Armenia" },
-	{ label: "Aruba" },
-	{ label: "Australia" },
-	{ label: "Austria" },
-	{ label: "Azerbaijan" },
-	{ label: "Bahamas" },
-	{ label: "Bahrain" },
-	{ label: "Bangladesh" },
-	{ label: "Barbados" },
-	{ label: "Belarus" },
-	{ label: "Belgium" },
-	{ label: "Belize" },
-	{ label: "Benin" },
-	{ label: "Bermuda" },
-	{ label: "Bhutan" },
-	{ label: "Bolivia, Plurinational State of" },
-	{ label: "Bonaire, Sint Eustatius and Saba" },
-	{ label: "Bosnia and Herzegovina" },
-	{ label: "Botswana" },
-	{ label: "Bouvet Island" },
-	{ label: "Brazil" },
-	{ label: "British Indian Ocean Territory" },
-	{ label: "Brunei Darussalam" },
-];
+import DetailsMasterDetails from "./DetailsMasterDetails";
+import * as CONFIG from "../../../../constants/config";
 
 const AutoComplete = styled(Autocomplete)(() => ({
 	width: 300,
@@ -74,7 +38,7 @@ const DetailsMaster = () => {
 	const [productGroup, setProductGroup] = useState([]);
 	const [open, setOpen] = useState(false);
 	const [openSearch, setOpenSearch] = useState(false);
-	const [selectedShapeData, setSelectedShapeData] = useState(null);
+	const [selectedDetailData, setSelectedDetailData] = useState(null);
 	const url = apiEndPoint.productDetails;
 
 	const handleChangePage = (_, newPage) => {
@@ -120,7 +84,7 @@ const DetailsMaster = () => {
 	const togglePopup = () => {
 		if (open) {
 			getTableData();
-			setSelectedShapeData(null);
+			setSelectedDetailData(null);
 		}
 		setOpen(!open);
 	};
@@ -130,7 +94,7 @@ const DetailsMaster = () => {
 	};
 
 	const handleEdit = (lab) => {
-		setSelectedShapeData(lab);
+		setSelectedDetailData(lab);
 		togglePopup();
 	};
 
@@ -196,7 +160,7 @@ const DetailsMaster = () => {
 												maxHeight: { xs: 25, md: 50 },
 												maxWidth: { xs: 25, md: 50 },
 											}}
-											src={configure.API_BASE_URL_IMG + row.logoUrl}
+											src={CONFIG.API_BASE_URL_IMG + row.logoUrl}
 										/>
 									)}
 								</TableCell>
@@ -252,7 +216,7 @@ const DetailsMaster = () => {
 					</Button>
 				</DialogActions>
 			</Dialog>
-			{/* <ShapeMasterDetails open={open} togglePopup={togglePopup} shapeData={selectedShapeData} /> */}
+			<DetailsMasterDetails open={open} togglePopup={togglePopup} detailsData={selectedDetailData} />
 		</Container>
 	);
 };
