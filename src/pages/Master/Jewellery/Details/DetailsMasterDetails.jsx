@@ -57,18 +57,13 @@ const DetailsMasterDetails = ({ open, togglePopup, detailsData }) => {
 		for (const field in values) {
 			fd.append(field, values[field]);
 		}
-
-		for (const data of fd.entries()) {
-			console.log(data);
-		}
-		console.log("asdf");
 		if (values.id === "") {
 			API.post(url, fd, header)
 				.then(() => {
 					HELPER.toaster.success("Record created");
 					togglePopup();
 				})
-				.catch((e) => HELPER.toaster.error(e));
+				.catch((e) => HELPER.toaster.error(e.errors.message));
 		} else {
 			API.put(`${url}/${values.id}`, fd, header)
 				.then(() => {

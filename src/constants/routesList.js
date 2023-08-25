@@ -7,7 +7,9 @@ export const apiEndPoint = {
 	category: "category",
 	subcategory: "subcategory",
     options:"options",
-    attributes:"attributes"
+    attributes:"attributes",
+    permission:"permission",
+    user:"user",
 };
 
 export const pageRoutes = {
