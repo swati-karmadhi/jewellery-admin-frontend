@@ -6,7 +6,8 @@ export const apiEndPoint = {
 	productDetails: "productDetails",
 	category: "category",
 	subcategory: "subcategory",
-    options:"options"
+    options:"options",
+    attributes:"attributes"
 };
 
 export const pageRoutes = {
