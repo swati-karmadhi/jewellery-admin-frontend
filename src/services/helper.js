@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 
 import "sweetalert2/dist/sweetalert2.css";
 import "react-toastify/dist/ReactToastify.css";
+import { apiConfig, appConfig } from "../config";
 
 export const isEmpty = (value) => {
 	if (value == null || value === "null") {
@@ -129,6 +130,13 @@ export const prepateSelectDropdown = (array, field1 = null, field2) => {
 			};
 		})
 		.filter((e) => !isEmpty(e.label));
+};
+
+export const getImageUrl = (url) => {
+  if (isEmpty(url)) {
+    return url;
+  }
+  return `${apiConfig.publicURL}/${url}`;
 };
 
 export const GetFormatedAmount = (amount, withCrDr = false, abs = true) => {

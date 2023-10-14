@@ -85,6 +85,7 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 			formikProps.resetForm();
 		}
 	}, [open]);
+	
 	return (
 		<Dialog open={open} onClose={togglePopup} aria-labelledby="form-dialog-title" maxWidth="xs">
 			<DialogTitle id="form-dialog-title">{formikProps.values.id === "" ? "Add" : "Edit"} User</DialogTitle>

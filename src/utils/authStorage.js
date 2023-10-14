@@ -1,7 +1,9 @@
+import { appConfig } from "../config";
+
 class AuthStorage {
 	static STORAGEKEY = {
 		userData: "userData",
-		access_token: "access_token",
+		access_token: appConfig.localStorage.token,
 		user_id: "user_id",
 		name: "name",
 	};

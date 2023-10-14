@@ -1,9 +1,11 @@
 import axios from "axios";
 import AuthStorage from "../utils/authStorage";
 import * as CONFIG from "../constants/config";
+import { apiConfig } from "../config";
+import { HELPER } from ".";
 
 const instance = axios.create({
-	baseURL: CONFIG.API_BASE_URL,
+	baseURL: apiConfig.baseURL,
     headers: {
 		"Content-Type": "application/json",
 	},
@@ -28,14 +30,25 @@ instance.interceptors.response.use(
 		return response.data.success ? response.data.data : response.error;
 	},
 	(error) => {
+		// in the case, server is stoped
+		if (error.code == "ERR_NETWORK") {
+			HELPER.toaster.error("Something went wrong, Please try after sometimes.");
+		}
+
         if(error.response.data.status === 401){
             AuthStorage.deauthenticateUser();
         }
 
 		return Promise.reject({
-			errors: error.response.data.error,
-			status: error.response.data.status,
-		});
+			errors:
+			  error?.response && error.response?.data?.error
+				? error.response?.data?.error
+				: { message: ["Somthing went wrong."] },
+			status:
+			  error?.response && error.response?.data?.status
+				? error.response?.data?.status
+				: 501,
+		  });
 	}
 );
 

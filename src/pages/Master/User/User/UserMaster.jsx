@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
 	Box,
 	Button,
@@ -11,11 +11,6 @@ import {
 	IconButton,
 	Radio,
 	RadioGroup,
-	TableBody,
-	TableCell,
-	TableHead,
-	TablePagination,
-	TableRow,
 	TextField,
 	Tooltip,
 } from "@mui/material";
@@ -25,68 +20,138 @@ import { API, HELPER } from "../../../../services";
 import * as CONFIG from "../../../../constants/config";
 import { useNavigate } from "react-router-dom";
 import UserMasterDetails from "./UserMasterDetails";
-import styled from "@emotion/styled";
-import { green, red } from "@mui/material/colors";
-
-const GreenRadio = styled(Radio)(() => ({
-	color: green[400],
-	"&$checked": { color: green[600] },
-}));
-
-const RedRadio = styled(Radio)(() => ({
-	color: red[400],
-	"&$checked": { color: red[600] },
-}));
-
-const initialData = {
-	searchTxt: "",
-	isActive: "",
-};
+import PaginationTable, { usePaginationTable } from "../../../../components/UI/Pagination/PaginationTable";
+import { appConfig } from "./../../../../config";
+import _ from "lodash";
+import useDidMountEffect from "../../../../hooks/useDidMountEffect";
 
 const UserMaster = () => {
-	const [page, setPage] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState(8);
-	const [searchParam, setSearchParam] = useState({ ...initialData });
-	const [tableDataCount, setTableDataCount] = useState(0);
-	const [tableData, setTableData] = useState([]);
 	const [open, setOpen] = useState(false);
 	const [openSearch, setOpenSearch] = useState(false);
 	const [selectedUserData, setSelectedUserData] = useState(null);
 	const navigate = useNavigate();
 	const url = apiEndPoint.user;
 
-	const handleChangePage = (_, newPage) => {
-		setPage(newPage);
-		getTableData(newPage);
-	};
-
-	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(+event.target.value);
-		setPage(0);
-		getTableData(0, +event.target.value);
-	};
-
-	const getTableData = (pg = page, rpp = rowsPerPage, sp= searchParam) => {
-		API.get(url, { page: pg, rowsPerPage: rpp, ...sp }).then((response) => {
-			setTableDataCount(response.count);
-			setTableData(response.rows);
+	/* Pagination code */
+	const COLUMNS = [
+		{ title: "Name"},
+		{ title: "Email"},
+		{ title: "Active"},
+		{ title: "Image"},
+		{ title: "Action" },
+	  ];
+	
+	  const { state, setState, changeState, ...otherTableActionProps } =
+		usePaginationTable({
+			searchTxt: "",
+			isActive: "",
+			order: "",
+			orderby: "",
 		});
-	};
+	
+	  const paginate = (clear = false, isNewFilter = false) => {
+		changeState("loader", true);
+		let clearStates = {
+			searchTxt: "",
+			isActive: "",
+		  ...appConfig.default_pagination_state,
+		};
+	
+		let filter = {
+		  page: state.page,
+		  searchTxt: state.searchTxt,
+		  isActive: state.isActive,
+		  rowsPerPage: state.rowsPerPage,
+		  order: state.order,
+		  orderBy: state.orderby
+		};
+	
+		let newFilterState = { ...appConfig.default_pagination_state };
+	
+		if (clear) {
+		  filter = _.merge(filter, clearStates);
+		} else if (isNewFilter) {
+		  filter = _.merge(filter, newFilterState);
+		}
+	
+		// ----------Get Blog Api------------
+		API.get(apiEndPoint.user, filter)
+		  .then((res) => {
+			setState({
+			  ...state,
+			  total_items: res.count,
+			  data: res.rows,
+			  ...(clear && clearStates),
+			  ...(isNewFilter && newFilterState),
+			  loader: false,
+			});
+		  })
+		  .catch(() => {
+			setState({
+			  ...state,
+			  ...(clear && clearStates),
+			  ...(isNewFilter && newFilterState),
+			  loader: false,
+	
+			});
+		  }).finally(() => {
+			if (openSearch == true) {
+				setOpenSearch(false);
+			}
+		  });
+	  };
+	
+	  useDidMountEffect(() => {
+		paginate();
+	  }, [state.page, state.rowsPerPage, state.order, state.orderby]);
 
-	useEffect(() => {
-		getTableData();
-	}, []);
-
-	const search = () => {
-		setPage(0);
-		setRowsPerPage(8);
-		getTableData(0, 8);
-		togglePopupSearch();
-	};
+	  const rows = useMemo(() => {
+		return state.data.map((item) => {
+		  return {
+			item: item,
+			columns: [
+			  <span>{item.firstName} {item.lastName}</span>,
+			  <span>{item.email}</span>,
+			  <span>
+				<IconButton onClick={() => handleToggle(item.id)}>
+					<Icon color={item.isActive === true ? "success" : "error"} style={{ fontWeight: 700 }}>
+						power_settings_new
+					</Icon>
+				</IconButton>
+			  </span>,
+			  <span>
+				{item.image && item.image !== null && (
+					<Box
+						component="img"
+						sx={{
+							height: 50,
+							width: 50,
+							maxHeight: { xs: 25, md: 50 },
+							maxWidth: { xs: 25, md: 50 },
+						}}
+						src={HELPER.getImageUrl(item.image)}
+					/>
+				)}
+			  </span>,
+			  <div>
+				<IconButton onClick={(e) => navigate(`${pageRoutes.master.user.userPermissions.split(":")[0]}${item.id}`)}>
+					<Icon color="warning">fingerprint</Icon>
+				</IconButton>
+				<IconButton onClick={(e) => handleEdit(item)}>
+					<Icon color="primary">edit</Icon>
+				</IconButton>
+				<IconButton onClick={(e) => handleDelete(item.id)}>
+					<Icon color="error">close</Icon>
+				</IconButton>
+			  </div>,
+			],
+		  };
+		});
+	  }, [state.data]);
+	/* Pagination code */
 
 	const togglePopup = () => {
 		if (open) {
-			getTableData();
 			setSelectedUserData(null);
 		}
 		setOpen(!open);
@@ -100,14 +165,14 @@ const UserMaster = () => {
 		API.put(`${url}/${id}/toggle`)
 			.then((response) => {
 				HELPER.toaster.success(response.message);
-				getTableData();
+				paginate();
 			})
 			.catch((e) => HELPER.toaster.error("Error " + e));
 	};
 
 	const handleEdit = (data) => {
 		setSelectedUserData(data);
-		togglePopup();
+		paginate();
 	};
 
 	const handleDelete = (id) => {
@@ -115,17 +180,11 @@ const UserMaster = () => {
 			API.destroy(`${url}/${id}`)
 				.then(() => {
 					HELPER.toaster.success("Record Deleted");
-					getTableData();
+					paginate();
 				})
 				.catch((e) => HELPER.toaster.error("Error " + e));
 		});
 	};
-
-    const resetSearchForm = ()=>{
-        setSearchParam({...initialData})
-		getTableData(page, rowsPerPage, {...initialData});
-		togglePopupSearch();
-    }
 
 	return (
 		<Container>
@@ -137,7 +196,7 @@ const UserMaster = () => {
 					</IconButton>
 				</Tooltip>
 			</Box>
-			<Box width="100%" overflow="auto">
+			{/* <Box width="100%" overflow="auto">
 				<StyledTable>
 					<TableHead>
 						<TableRow>
@@ -213,7 +272,24 @@ const UserMaster = () => {
 					nextIconButtonProps={{ "aria-label": "Next Page" }}
 					backIconButtonProps={{ "aria-label": "Previous Page" }}
 				/>
-			</Box>
+			</Box> */}
+			<PaginationTable
+				header={COLUMNS}
+				rows={rows}
+				totalItems={state.total_items}
+				perPage={state.rowsPerPage}
+				activePage={state.page}
+				checkboxColumn={false}
+				selectedRows={state.selectedRows}
+				enableOrder={true}
+				isLoader={state.loader}
+				// emptyTableImg={<img src={error400cover} width="350px" />}
+				{...otherTableActionProps}
+				orderBy={state.orderby}
+				order={state.order}
+			>
+				
+			</PaginationTable>
 			<Tooltip title="Create" placement="top">
 				<StyledAddButton color="secondary" aria-label="Add" className="button" onClick={togglePopup}>
 					<Icon>add</Icon>
@@ -229,16 +305,16 @@ const UserMaster = () => {
 						name="searchTxt"
 						label="Search Text"
 						variant="outlined"
-						value={searchParam.searchTxt}
-						onChange={(e) => setSearchParam((data) => ({ ...data, searchTxt: e.target.value }))}
+						value={state?.searchTxt}
+						onChange={(e) => changeState("searchTxt", e.target.value)}
 						sx={{ mb: 2, mt: 1 }}
 					/>
 					<RadioGroup
 						row
 						aria-label="position"
 						name="isActive"
-						value={searchParam.isActive}
-						onChange={(e) => setSearchParam((data) => ({ ...data, isActive: e.target.value }))}
+						value={state?.isActive}
+						onChange={(e) => changeState("isActive", e.target.value)}
 					>
 						<FormControlLabel value="" label="All" labelPlacement="start" control={<Radio color="default" />} />
 						<FormControlLabel value="1" label="Active" labelPlacement="start" control={<Radio color="success" />} />
@@ -246,10 +322,10 @@ const UserMaster = () => {
 					</RadioGroup>
 				</DialogContent>
 				<DialogActions sx={{ px: 3, pb: 2 }}>
-					<Button variant="outlined" color="secondary" onClick={resetSearchForm}>
+					<Button variant="outlined" color="secondary" onClick={() => paginate(true)}>
 						Reset
 					</Button>
-					<Button type="submit" color="primary" onClick={search}>
+					<Button type="submit" color="primary" onClick={() => paginate(false, true)}>
 						Search
 					</Button>
 				</DialogActions>
