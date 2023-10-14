@@ -97,7 +97,7 @@ const UserMaster = () => {
 	};
 
 	const handleToggle = (id) => {
-		API.put(`${apiEndPoint.user}/${id}/toggle`)
+		API.put(`${url}/${id}/toggle`)
 			.then((response) => {
 				HELPER.toaster.success(response.message);
 				getTableData();

@@ -10,6 +10,7 @@ export const apiEndPoint = {
     attributes:"attributes",
     permission:"permission",
     user:"user",
+    userPermission:"userPermission",
 };
 
 export const pageRoutes = {

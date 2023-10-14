@@ -23,3 +23,4 @@ export { default as Container } from './Container';
 export { default as StyledAddButton } from './StyledAddButton';
 export { default as StyledTable } from './StyledTable';
 export { default as StyledTextarea } from './StyledTextarea';
+export { default as Android12Switch } from './Android12Switch';
