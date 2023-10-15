@@ -6,6 +6,9 @@ import { apiEndPoint } from "../../../../constants/routesList";
 import { useFormik } from "formik";
 import { StyledTextarea } from "../../../../components";
 import Select from "react-select";
+import ThemeDialog from "../../../../components/UI/Dialog/ThemeDialog";
+import Validators from "./../../../../components/validations/Validator";
+import Textinput from "../../../../components/UI/TextInput";
 
 // inital data
 const initialValues = {
@@ -45,13 +48,26 @@ const validationSchema = Yup.object().shape({
 const UserMasterDetails = ({ open, togglePopup, userData }) => {
 	const url = apiEndPoint.user;
 
-	const handleFormSubmit = async (values) => {
+	//  -------------formState --------------
+	const [formState, setFormState] = useState({
+		...initialValues
+	  });
+	  //  -------------Validation --------------
+	  const rules = {
+		firstName: "required",
+		lastName: "required",
+		email: "required",
+		profile: "required",
+	  };
+	
+	  //  --------------handle onSubmit Blog  --------------
+	  const handleSubmit = (data) => {
 		const fd = new FormData();
 
-		for (const field in values) {
-			fd.append(field, values[field]);
+		for (const field in data) {
+			fd.append(field, data[field]);
 		}
-		if (values.id === "") {
+		if (data.id === "") {
 			API.post(url, fd, header)
 				.then(() => {
 					HELPER.toaster.success("Record created");
@@ -59,7 +75,7 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 				})
 				.catch((e) => HELPER.toaster.error(e.errors.message));
 		} else {
-			API.put(`${url}/${values.id}`, fd, header)
+			API.put(`${url}/${data.id}`, fd, header)
 				.then(() => {
 					HELPER.toaster.success("Record saved");
 					togglePopup();
@@ -68,138 +84,137 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 					HELPER.toaster.error(e.errors.message);
 				});
 		}
-	};
-
-	const formikProps = useFormik({
-		onSubmit: handleFormSubmit,
-		initialValues,
-		validationSchema,
-	});
+	  };
+	
+	  const onChange = ({ target: { value, name } }) => {
+		setFormState((prev) => ({
+		  ...prev,
+		  [name]: value,
+		}));
+	  };
 
 	useEffect(() => {
 		if (open === true && userData !== null) {
-			Object.keys(userData).forEach((key) => {
-				formikProps.setFieldValue(key, userData[key]);
-			});
+			setFormState(userData)
 		} else {
-			formikProps.resetForm();
+			setFormState({...initialValues})
 		}
 	}, [open]);
 	
 	return (
-		<Dialog open={open} onClose={togglePopup} aria-labelledby="form-dialog-title" maxWidth="xs">
-			<DialogTitle id="form-dialog-title">{formikProps.values.id === "" ? "Add" : "Edit"} User</DialogTitle>
-			<form id="inputDetails" onSubmit={formikProps.handleSubmit}>
-				<DialogContent>
-					<TextField
-						size="small"
-						type="text"
-						name="firstName"
-						label="First Name"
-						variant="outlined"
-						onBlur={formikProps.handleBlur}
-						value={formikProps.values.firstName}
-						onChange={formikProps.handleChange}
-						helperText={formikProps.touched.firstName && formikProps.errors.firstName}
-						error={Boolean(formikProps.errors.firstName && formikProps.touched.firstName)}
-						sx={{ mb: 2, mt: 1, width: "49%" }}
-					/>
-					<TextField
-						size="small"
-						type="text"
-						name="lastName"
-						label="Last Name"
-						variant="outlined"
-						onBlur={formikProps.handleBlur}
-						value={formikProps.values.lastName}
-						onChange={formikProps.handleChange}
-						helperText={formikProps.touched.lastName && formikProps.errors.lastName}
-						error={Boolean(formikProps.errors.lastName && formikProps.touched.lastName)}
-						sx={{ mb: 2, mt: 1, ml: 0.5, width: "49.5%" }}
-					/>
-					<TextField
-						fullWidth={true}
-						size="small"
-						type="email"
-						name="email"
-						label="Email"
-						variant="outlined"
-						onBlur={formikProps.handleBlur}
-						value={formikProps.values.email}
-						onChange={formikProps.handleChange}
-						helperText={formikProps.touched.email && formikProps.errors.email}
-						error={Boolean(formikProps.errors.email && formikProps.touched.email)}
-						sx={{ mb: 2, mt: 1 }}
-						InputProps={{
-							startAdornment: <InputAdornment position="start">@</InputAdornment>,
-						}}
-					/>
-				</DialogContent>
-				<DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
-					<Box sx={{ display: "flex", alignContent: "center", flexWrap: "unset" }}>
-						<TextField
-							id="icon-button-file"
-							fullWidth={true}
-							size="small"
-							type="file"
-							name="profile"
-							inputProps={{ accept: "image/*" }}
-							sx={{ mt: 1, mb: 2, display: "none" }}
-							onChange={(e) => {
-								formikProps.setFieldValue("profile", e.currentTarget.files[0]);
-							}}
-							onBlur={formikProps.handleBlur}
-							helperText={formikProps.touched.profile && formikProps.errors.profile}
-							error={Boolean(formikProps.errors.profile && formikProps.touched.profile)}
-						/>
-						<label htmlFor="icon-button-file">
-							<IconButton
-								color="primary"
-								id="profile"
-								component="span"
-								className="button"
-								onBlur={formikProps.handleBlur}
-								aria-label="Upload picture"
-								disableRipple={true}
-							>
-								{formikProps.values.profile && formikProps.values.profile !== null ? (
-									<Box
-										id="image"
-										component="img"
-										sx={{
-											height: 50,
-											width: 50,
-											maxHeight: { xs: 25, md: 50 },
-											maxWidth: { xs: 25, md: 50 },
-											...(Boolean(formikProps.errors.profile && formikProps.touched.profile) && {
-												border: "2px solid #FF3D57",
-											}),
+		<>
+			<Validators formData={formState} rules={rules}>
+				{({ onSubmit, errors }) => {
+					return (
+						<ThemeDialog
+							title={`${formState?.id === "" ? "Add" : "Edit"} User`}
+							isOpen={open}
+							onClose={togglePopup}
+							actionBtns={<>
+								<Box sx={{ display: "flex", alignContent: "center", flexWrap: "unset" }}>
+									<TextField
+										id="icon-button-file"
+										fullWidth={true}
+										size="small"
+										type="file"
+										name="profile"
+										inputProps={{ accept: "image/*" }}
+										sx={{ mt: 1, mb: 2, display: "none" }}
+										onChange={(e) => {
+											formikProps.setFieldValue("profile", e.currentTarget.files[0]);
 										}}
-										src={URL.createObjectURL(formikProps.values.profile)}
-										onError={(e) => {
-											e.target.src = "/assets/camera.svg";
-										}}
+										onBlur={formikProps.handleBlur}
+										helperText={formikProps.touched.profile && formikProps.errors.profile}
+										error={Boolean(formikProps.errors.profile && formikProps.touched.profile)}
 									/>
-								) : (
-									<Icon>photo_camera</Icon>
-								)}
-							</IconButton>
-						</label>
-						{Boolean(formikProps.errors.profile && formikProps.touched.profile) && (
-							<p style={{ color: "#FF3D57", fontSize: "12px" }}>{formikProps.touched.profile && formikProps.errors.profile}</p>
-						)}
-					</Box>
-					<Box>
-						<Button variant="outlined" color="secondary" onClick={togglePopup}>
-							Cancel
-						</Button>
-						<Button type="submit" color="primary">
-							Save
-						</Button>
-					</Box>
-				</DialogActions>
-			</form>
-		</Dialog>
+									<label htmlFor="icon-button-file">
+										<IconButton
+											color="primary"
+											id="profile"
+											component="span"
+											className="button"
+											onBlur={formikProps.handleBlur}
+											aria-label="Upload picture"
+											disableRipple={true}
+										>
+											{formState.profile && formState.profile !== null ? (
+												<Box
+													id="image"
+													component="img"
+													sx={{
+														height: 50,
+														width: 50,
+														maxHeight: { xs: 25, md: 50 },
+														maxWidth: { xs: 25, md: 50 },
+														...(Boolean(formikProps.errors.profile && formikProps.touched.profile) && {
+															border: "2px solid #FF3D57",
+														}),
+													}}
+													src={URL.createObjectURL(formState.profile)}
+													onError={(e) => {
+														e.target.src = "/assets/camera.svg";
+													}}
+												/>
+											) : (
+												<Icon>photo_camera</Icon>
+											)}
+										</IconButton>
+									</label>
+									{Boolean(formikProps.errors.profile && formikProps.touched.profile) && (
+										<p style={{ color: "#FF3D57", fontSize: "12px" }}>{formikProps.touched.profile && formikProps.errors.profile}</p>
+									)}
+								</Box>
+								<Box>
+									<Button variant="outlined" color="secondary" onClick={togglePopup}>
+										Cancel
+									</Button>
+									<Button type="submit" color="primary" onClick={() => handleSubmit(onSubmit)}>
+										Save
+									</Button>
+								</Box>
+							</>}
+						>
+							<>
+								<Textinput
+									size="small"
+									type="text"
+									name="firstName"
+									label="First Name"
+									value={formState.firstName}
+									onChange={onChange}
+									helperText={formikProps.touched.firstName && formikProps.errors.firstName}
+									error={errors}
+									sx={{ mb: 2, mt: 1, width: "49%" }}
+								/>
+								<Textinput
+									type="text"
+									name="lastName"
+									label="Last Name"
+									value={formState.lastName}
+									onChange={onChange}
+									error={errors}
+									sx={{ mb: 2, mt: 1, ml: 0.5, width: "49.5%" }}
+								/>
+								<Textinput
+									fullWidth={true}
+									size="small"
+									type="email"
+									name="email"
+									label="Email"
+									value={formState.email}
+									onChange={onChange}
+									error={errors}
+									sx={{ mb: 2, mt: 1 }}
+									InputProps={{
+										startAdornment: <InputAdornment position="start">@</InputAdornment>,
+									}}
+								/>
+							</>
+						</ThemeDialog>
+					);
+				}}
+			</Validators>
+		</>
 	);
 };
 

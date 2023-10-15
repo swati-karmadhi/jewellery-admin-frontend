@@ -1,4 +1,4 @@
-import { validationMessages } from "./../../constant/data";
+import { validationMessages } from "./../../constants/validationMessages";
 import React, { createContext, useEffect, useState } from "react";
 import Validator from "validatorjs";
 import { HELPER } from "./../../services";

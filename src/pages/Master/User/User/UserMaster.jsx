@@ -24,6 +24,7 @@ import PaginationTable, { usePaginationTable } from "../../../../components/UI/P
 import { appConfig } from "./../../../../config";
 import _ from "lodash";
 import useDidMountEffect from "../../../../hooks/useDidMountEffect";
+import SearchFilterDialog from "../../../../components/UI/Dialog/SearchFilterDialog";
 
 const UserMaster = () => {
 	const [open, setOpen] = useState(false);
@@ -295,41 +296,37 @@ const UserMaster = () => {
 					<Icon>add</Icon>
 				</StyledAddButton>
 			</Tooltip>
-			<Dialog open={openSearch} onClose={togglePopupSearch} aria-labelledby="form-dialog-title">
-				<DialogTitle id="form-dialog-title">Search Filter</DialogTitle>
-				<DialogContent>
-					<TextField
-						fullWidth={true}
-						size="small"
-						type="text"
-						name="searchTxt"
-						label="Search Text"
-						variant="outlined"
-						value={state?.searchTxt}
-						onChange={(e) => changeState("searchTxt", e.target.value)}
-						sx={{ mb: 2, mt: 1 }}
-					/>
-					<RadioGroup
-						row
-						aria-label="position"
-						name="isActive"
-						value={state?.isActive}
-						onChange={(e) => changeState("isActive", e.target.value)}
-					>
-						<FormControlLabel value="" label="All" labelPlacement="start" control={<Radio color="default" />} />
-						<FormControlLabel value="1" label="Active" labelPlacement="start" control={<Radio color="success" />} />
-						<FormControlLabel value="0" label="Inactive" labelPlacement="start" control={<Radio color="error" />} />
-					</RadioGroup>
-				</DialogContent>
-				<DialogActions sx={{ px: 3, pb: 2 }}>
-					<Button variant="outlined" color="secondary" onClick={() => paginate(true)}>
-						Reset
-					</Button>
-					<Button type="submit" color="primary" onClick={() => paginate(false, true)}>
-						Search
-					</Button>
-				</DialogActions>
-			</Dialog>
+
+			<SearchFilterDialog 
+				isOpen={openSearch} 
+				onClose={() => setOpenSearch(false)} 
+				reset={() => paginate(true)}
+				search={() => paginate(false, true)}
+			>
+				<TextField
+					fullWidth={true}
+					size="small"
+					type="text"
+					name="searchTxt"
+					label="Search Text"
+					variant="outlined"
+					value={state?.searchTxt}
+					onChange={(e) => changeState("searchTxt", e.target.value)}
+					sx={{ mb: 2, mt: 1 }}
+				/>
+				<RadioGroup
+					row
+					aria-label="position"
+					name="isActive"
+					value={state?.isActive}
+					onChange={(e) => changeState("isActive", e.target.value)}
+				>
+					<FormControlLabel value="" label="All" labelPlacement="start" control={<Radio color="default" />} />
+					<FormControlLabel value="1" label="Active" labelPlacement="start" control={<Radio color="success" />} />
+					<FormControlLabel value="0" label="Inactive" labelPlacement="start" control={<Radio color="error" />} />
+				</RadioGroup>
+			</SearchFilterDialog>
+			
 			<UserMasterDetails open={open} togglePopup={togglePopup} userData={selectedUserData} />
 		</Container>
 	);
