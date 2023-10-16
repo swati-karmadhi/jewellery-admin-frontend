@@ -51,7 +51,7 @@ Validator.register(
         }
 
         if (value.size > Number(requirement)) {
-            return false; // File size exceeds 1MB
+            return false;
         }
 
         return true
@@ -67,7 +67,7 @@ Validator.register(
         }
 
         if (value.size < Number(requirement)) {
-            return false; // File size exceeds 1MB
+            return false;
         }
 
         return true
