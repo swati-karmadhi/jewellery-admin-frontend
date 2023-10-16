@@ -1,6 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   FormControlLabel,
   Icon,
   IconButton,
@@ -17,6 +22,7 @@ import {
 } from "../../../../components";
 import { apiEndPoint, pageRoutes } from "../../../../constants/routesList";
 import { API, HELPER } from "../../../../services";
+import * as CONFIG from "../../../../constants/config";
 import { useNavigate } from "react-router-dom";
 import UserMasterDetails from "./UserMasterDetails";
 import PaginationTable, {
@@ -26,7 +32,6 @@ import { appConfig } from "./../../../../config";
 import _ from "lodash";
 import useDidMountEffect from "../../../../hooks/useDidMountEffect";
 import SearchFilterDialog from "../../../../components/UI/Dialog/SearchFilterDialog";
-import error400cover from "../../../../assets/no-data-found-page.png";
 
 const UserMaster = () => {
   const [open, setOpen] = useState(false);
@@ -156,9 +161,9 @@ const UserMaster = () => {
             <IconButton onClick={(e) => handleEdit(item)}>
               <Icon color="primary">edit</Icon>
             </IconButton>
-            <IconButton onClick={(e) => handleDelete(item.id)}>
+            {/* <IconButton onClick={(e) => handleDelete(item.id)}>
               <Icon color="error">close</Icon>
-            </IconButton>
+            </IconButton> */}
           </div>,
         ],
       };
@@ -225,7 +230,83 @@ const UserMaster = () => {
           </IconButton>
         </Tooltip>
       </Box>
-
+      {/* <Box width="100%" overflow="auto">
+				<StyledTable>
+					<TableHead>
+						<TableRow>
+							<TableCell align="left" width="30%">
+								Name
+							</TableCell>
+							<TableCell align="left">Email</TableCell>
+							<TableCell align="left" width="50px">
+								Active
+							</TableCell>
+							<TableCell align="center" width="100px">
+								Image
+							</TableCell>
+							<TableCell align="center" width="150px">
+								Action
+							</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{tableData.map((row, index) => (
+							<TableRow key={index}>
+								<TableCell align="left">
+									{row.firstName} {row.lastName}
+								</TableCell>
+								<TableCell align="left" style={{ textTransform: "none" }}>
+									{row.email}
+								</TableCell>
+								<TableCell align="left">
+									<IconButton onClick={() => handleToggle(row.id)}>
+										<Icon color={row.isActive === true ? "success" : "error"} style={{ fontWeight: 700 }}>
+											power_settings_new
+										</Icon>
+									</IconButton>
+								</TableCell>
+								<TableCell align="center">
+									{row.image && row.image !== null && (
+										<Box
+											component="img"
+											sx={{
+												height: 50,
+												width: 50,
+												maxHeight: { xs: 25, md: 50 },
+												maxWidth: { xs: 25, md: 50 },
+											}}
+											src={CONFIG.API_BASE_URL_IMG + row.image}
+										/>
+									)}
+								</TableCell>
+								<TableCell align="center">
+									<IconButton onClick={(e) => navigate(`${pageRoutes.master.user.userPermissions.split(":")[0]}${row.id}`)}>
+										<Icon color="warning">fingerprint</Icon>
+									</IconButton>
+									<IconButton onClick={(e) => handleEdit(row)}>
+										<Icon color="primary">edit</Icon>
+									</IconButton>
+									<IconButton onClick={(e) => handleDelete(row.id)}>
+										<Icon color="error">close</Icon>
+									</IconButton>
+								</TableCell>
+							</TableRow>
+						))}
+					</TableBody>
+				</StyledTable>
+				<TablePagination
+					sx={{ px: 2 }}
+					page={page}
+					component="div"
+					rowsPerPage={rowsPerPage}
+					count={tableDataCount}
+					onPageChange={handleChangePage}
+					rowsPerPageOptions={[5, 8, 10]}
+					onRowsPerPageChange={handleChangeRowsPerPage}
+					nextIconButtonProps={{ "aria-label": "Next Page" }}
+					backIconButtonProps={{ "aria-label": "Previous Page" }}
+				/>
+			</Box> */}
       <PaginationTable
         header={COLUMNS}
         rows={rows}
@@ -251,6 +332,51 @@ const UserMaster = () => {
           <Icon>add</Icon>
         </StyledAddButton>
       </Tooltip>
+
+      <SearchFilterDialog
+        isOpen={openSearch}
+        onClose={() => setOpenSearch(false)}
+        reset={() => paginate(true)}
+        search={() => paginate(false, true)}
+      >
+        <TextField
+          fullWidth={true}
+          size="small"
+          type="text"
+          name="searchTxt"
+          label="Search Text"
+          variant="outlined"
+          value={state?.searchTxt}
+          onChange={(e) => changeState("searchTxt", e.target.value)}
+          sx={{ mb: 2, mt: 1 }}
+        />
+        <RadioGroup
+          row
+          aria-label="position"
+          name="isActive"
+          value={state?.isActive}
+          onChange={(e) => changeState("isActive", e.target.value)}
+        >
+          <FormControlLabel
+            value=""
+            label="All"
+            labelPlacement="start"
+            control={<Radio color="default" />}
+          />
+          <FormControlLabel
+            value="1"
+            label="Active"
+            labelPlacement="start"
+            control={<Radio color="success" />}
+          />
+          <FormControlLabel
+            value="0"
+            label="Inactive"
+            labelPlacement="start"
+            control={<Radio color="error" />}
+          />
+        </RadioGroup>
+      </SearchFilterDialog>
 
       <UserMasterDetails
         open={open}
