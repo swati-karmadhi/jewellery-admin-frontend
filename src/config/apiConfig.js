@@ -14,6 +14,9 @@ const apiConfig = {
 
   // auth apis
   login: "login", // admin login
+
+  //lab
+  lab: "lab",
 };
 
 export default apiConfig;

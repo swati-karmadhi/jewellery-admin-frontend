@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
-import { appConfig } from './../../../config';
+import { appConfig } from "./../../../config";
 
 import {
   Box,
@@ -13,9 +13,9 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import StyledTable from "../../StyledTable";
-import { visuallyHidden } from '@mui/utils';
+import { visuallyHidden } from "@mui/utils";
 
-const rowsPerPageOptions = [5, 10, 25, 50]
+const rowsPerPageOptions = [5, 10, 25, 50];
 
 export const usePaginationTable = (initialState = {}) => {
   const [state, setState] = useState({
@@ -145,47 +145,67 @@ export default function PaginationTable({
           <TableHead>
             <TableRow>
               {header.map((headerItem, headerIndex) => {
-                  return (
-                    <TableCell align="center">
-                      {enableOrder && headerItem?.order ? (
-                        <TableSortLabel
-                          active={headerItem.field == orderBy}
-                          direction={order == "asc" ? "desc" : "asc"}
-                          onClick={() => {
-                            changeOrder(
-                              headerItem.field,
-                              order == "asc" ? "desc" : "asc"
-                            )
-                          }}
-                        >
-                          {`${headerItem.title} `}
-                          <Box component="span" sx={visuallyHidden}>
-                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                          </Box>
-                        </TableSortLabel>
-                      ): (
-                        <>{`${headerItem.title} `}</>
-                      )}
+                return (
+                  <TableCell align="center" key={`tr_${headerIndex}`}>
+                    {enableOrder && headerItem?.order ? (
+                      <TableSortLabel
+                        active={headerItem.field == orderBy}
+                        direction={order == "asc" ? "desc" : "asc"}
+                        onClick={() => {
+                          changeOrder(
+                            headerItem.field,
+                            order == "asc" ? "desc" : "asc"
+                          );
+                        }}
+                      >
+                        {`${headerItem.title} `}
+                        <Box component="span" sx={visuallyHidden}>
+                          {order === "desc"
+                            ? "sorted descending"
+                            : "sorted ascending"}
+                        </Box>
+                      </TableSortLabel>
+                    ) : (
+                      <>{`${headerItem.title} `}</>
+                    )}
                   </TableCell>
-                  );
-                })}
+                );
+              })}
             </TableRow>
           </TableHead>
           <TableBody>
-              {rows.map((row, rowIndex) => {
-                return (
-                  <TableRow key={`tr_${rowIndex}`}>
-                    {row.columns.map((column, columnIndex) => {
-                      return (
-                        <TableCell key={`td_${rowIndex}_${columnIndex}`} align="center">{column}</TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
+            {rows.map((row, rowIndex) => {
+              return (
+                <TableRow key={`tr_${rowIndex}`}>
+                  {row.columns.map((column, columnIndex) => {
+                    return (
+                      <TableCell
+                        key={`td_${rowIndex}_${columnIndex}`}
+                        align="center"
+                      >
+                        {column}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </StyledTable>
-
+        {rows?.length === 0 && activePage === 0 && (
+          <>
+            <div
+              className=""
+              style={{
+                marginTop: "20px",
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              {emptyTableImg}
+            </div>
+          </>
+        )}
         <TablePagination
           sx={{ px: 2 }}
           page={activePage}
@@ -194,18 +214,13 @@ export default function PaginationTable({
           count={totalItems}
           onPageChange={(_, pageNumber) => changeActivePage(pageNumber)}
           rowsPerPageOptions={rowsPerPageOptions}
-          onRowsPerPageChange={(event) => changePerPage(Number(event.target.value))}
+          onRowsPerPageChange={(event) =>
+            changePerPage(Number(event.target.value))
+          }
           nextIconButtonProps={{ "aria-label": "Next Page" }}
           backIconButtonProps={{ "aria-label": "Previous Page" }}
         />
       </Box>
-
-      {rows?.length == 0 && activePage === 0 && (
-        <div className="d-flex justify-content-center my-4">
-          {emptyTableImg}
-        </div>
-      )}
-
     </React.Fragment>
   );
 }
