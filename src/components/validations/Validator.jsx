@@ -29,7 +29,11 @@ const _registerFileuploadValidations = () => {
   Validator.register(
     "mimes",
     function (value, requirement, attribute) {
-      const allowedExtensions = requirement.split(',');
+      if (typeof value == 'string') {
+        return true;
+      }
+
+      const allowedExtensions = requirement ? requirement.split(','): [];
       const fileExtension = value.name.split('.').pop();
       if (!allowedExtensions.includes(fileExtension)) {
         return false; // Invalid file type
@@ -42,6 +46,10 @@ const _registerFileuploadValidations = () => {
 Validator.register(
     "max_file_size",
     function (value, requirement, attribute) {
+        if (typeof value == 'string') {
+          return true;
+        }
+
         if (value.size > Number(requirement)) {
             return false; // File size exceeds 1MB
         }
@@ -54,6 +62,10 @@ Validator.register(
   Validator.register(
     "min_file_size",
     function (value, requirement, attribute) {
+        if (typeof value == 'string') {
+          return true;
+        }
+
         if (value.size < Number(requirement)) {
             return false; // File size exceeds 1MB
         }
@@ -103,6 +115,8 @@ export default function Validators({
   rules = {},
   children,
 }) {
+  let _formData = {...formData}
+  
   const [submitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
@@ -112,7 +126,7 @@ export default function Validators({
         setErrors({});
       }
     }
-  }, [formData]);
+  }, [_formData]);
 
   const [errors, setErrors] = useState(null);
 
@@ -126,7 +140,7 @@ export default function Validators({
     let isValidationFailed = isValidationFail();
     if (false == isValidationFailed) {
       setErrors({});
-      callback(formData);
+      callback(_formData);
       setIsSubmitted(false);
     } else {
       HELPER.toaster.error("Please fill the required fields with valid format");
@@ -137,9 +151,9 @@ export default function Validators({
   const isValidationFail = () => {
     Validator.setMessages("en", validationMessages);
 
-    _registerValidations(formData, rules);
+    _registerValidations(_formData, rules);
 
-    let validation = new Validator(formData, rules, customValidationMessages);
+    let validation = new Validator(_formData, rules, customValidationMessages);
     validation.setAttributeFormatter(function (attribute) {
       return ":attribute";
     });

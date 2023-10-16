@@ -173,7 +173,7 @@ const UserMaster = () => {
 
 	const handleEdit = (data) => {
 		setSelectedUserData(data);
-		paginate();
+		setOpen(true)
 	};
 
 	const handleDelete = (id) => {
@@ -327,7 +327,10 @@ const UserMaster = () => {
 				</RadioGroup>
 			</SearchFilterDialog>
 			
-			<UserMasterDetails open={open} togglePopup={togglePopup} userData={selectedUserData} />
+			<UserMasterDetails open={open} togglePopup={() => {
+				togglePopup()
+				paginate()
+			}} userData={selectedUserData} />
 		</Container>
 	);
 };

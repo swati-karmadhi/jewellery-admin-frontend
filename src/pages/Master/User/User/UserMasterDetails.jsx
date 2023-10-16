@@ -1,11 +1,7 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Icon, IconButton, InputAdornment, TextField } from "@mui/material";
+import { Box, Button, InputAdornment } from "@mui/material";
 import { useEffect, useState } from "react";
-import * as Yup from "yup";
 import { API, HELPER } from "../../../../services";
 import { apiEndPoint } from "../../../../constants/routesList";
-import { useFormik } from "formik";
-import { StyledTextarea } from "../../../../components";
-import Select from "react-select";
 import ThemeDialog from "../../../../components/UI/Dialog/ThemeDialog";
 import Validators from "./../../../../components/validations/Validator";
 import Textinput from "../../../../components/UI/TextInput";
@@ -38,7 +34,7 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 		firstName: "required",
 		lastName: "required",
 		email: "required",
-		profile: "required|mimes:png,jpg,jpeg|max_file_size:1048576",
+		profile: "mimes:png,jpg,jpeg|max_file_size:1048576",
 	  };
 	
 	  //  --------------handle onSubmit   --------------
@@ -76,6 +72,7 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 
 	useEffect(() => {
 		if (open === true && userData !== null) {
+			userData.profile = HELPER.getImageUrl(userData.image)
 			setFormState(userData)
 		} else {
 			setFormState({...initialValues})
@@ -150,12 +147,13 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 									onChange={onChange}
 									value={formState?.profile}
 									error={errors?.profile}
+									label={'Profile Image'}
 								/>
 								<Box>
 									<Button variant="outlined" color="secondary" onClick={togglePopup}>
 										Cancel
 									</Button>
-									<Button type="submit" color="primary" onClick={() => handleSubmit(onSubmit)}>
+									<Button type="submit" color="primary" onClick={() => onSubmit(handleSubmit)}>
 										Save
 									</Button>
 								</Box>

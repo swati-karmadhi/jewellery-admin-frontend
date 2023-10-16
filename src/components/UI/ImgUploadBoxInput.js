@@ -2,8 +2,9 @@ import React from 'react'
 import { HELPER } from '../../services';
 import { Box, Icon, IconButton } from "@mui/material";
 import Textinput from './TextInput';
+import ValidationMessages from '../validations/ValidationMessages';
 
-export default function ImgUploadBoxInput({error, name, onChange,value,...rest}) {
+export default function ImgUploadBoxInput({error, name, onChange, value, label ,...rest}) {
   const randomStr = () => {
     return Math.random(10).toString().slice(2);
   }  
@@ -55,9 +56,7 @@ export default function ImgUploadBoxInput({error, name, onChange,value,...rest})
             </label>
             {Boolean(!HELPER.isEmpty(error)) && (
                 <>
-                    {error.map((itemError) => (
-                        <p style={{ color: "#FF3D57", fontSize: "12px" }}>{itemError}</p>
-                    ))}
+                    <ValidationMessages errors={error} label={label} />
                 </>
             )}
         </Box>
