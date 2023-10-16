@@ -1,4 +1,4 @@
-import React, { useEffect,useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Icon, IconButton, TableBody, TableCell, TableHead, TablePagination, TableRow, Tooltip } from "@mui/material";
 import { Breadcrumb, Container, StyledAddButton, StyledTable } from "../../../../components";
 import { apiEndPoint, pageRoutes } from "../../../../constants/routesList";
@@ -24,10 +24,10 @@ const PermissionsMaster = () => {
 
 	/* Pagination code */
 	const COLUMNS = [
-		{ title: "Permission"},
-		{ title: "Group"},
-	  ];
-	  const { state, setState, changeState, ...otherTableActionProps } =
+		{ title: "Permission" },
+		{ title: "Group" },
+	];
+	const { state, setState, changeState, ...otherTableActionProps } =
 		usePaginationTable({
 			searchTxt: "",
 			isActive: "",
@@ -40,102 +40,68 @@ const PermissionsMaster = () => {
 		let clearStates = {
 			searchTxt: "",
 			isActive: "",
-		  ...appConfig.default_pagination_state,
+			...appConfig.default_pagination_state,
 		};
-	
+
 		let filter = {
-		  page: state.page,
-		  searchTxt: state.searchTxt,
-		  isActive: state.isActive,
-		  rowsPerPage: state.rowsPerPage,
-		  order: state.order,
-		  orderBy: state.orderby
+			page: state.page,
+			searchTxt: state.searchTxt,
+			isActive: state.isActive,
+			rowsPerPage: state.rowsPerPage,
+			order: state.order,
+			orderBy: state.orderby
 		};
-	
+
 		let newFilterState = { ...appConfig.default_pagination_state };
-	
+
 		if (clear) {
-		  filter = _.merge(filter, clearStates);
+			filter = _.merge(filter, clearStates);
 		} else if (isNewFilter) {
-		  filter = _.merge(filter, newFilterState);
+			filter = _.merge(filter, newFilterState);
 		}
-	
+
 		// ----------Get Blog Api------------
 		API.get(apiEndPoint.permission, filter)
-		  .then((res) => {
-			setState({
-			  ...state,
-			  total_items: res.count,
-			  data: res.rows,
-			  ...(clear && clearStates),
-			  ...(isNewFilter && newFilterState),
-			  loader: false,
+			.then((res) => {
+				setState({
+					...state,
+					total_items: res.count,
+					data: res.rows,
+					...(clear && clearStates),
+					...(isNewFilter && newFilterState),
+					loader: false,
+				});
+			})
+			.catch(() => {
+				setState({
+					...state,
+					...(clear && clearStates),
+					...(isNewFilter && newFilterState),
+					loader: false,
+
+				});
+			}).finally(() => {
+				if (openSearch == true) {
+					setOpenSearch(false);
+				}
 			});
-		  })
-		  .catch(() => {
-			setState({
-			  ...state,
-			  ...(clear && clearStates),
-			  ...(isNewFilter && newFilterState),
-			  loader: false,
-	
-			});
-		  }).finally(() => {
-			if (openSearch == true) {
-				setOpenSearch(false);
-			}
-		  });
-	  };
-	  useDidMountEffect(() => {
+	};
+	useDidMountEffect(() => {
 		paginate();
-	  }, [state.page, state.rowsPerPage, state.order, state.orderby]);
-	
-	  const rows = useMemo(() => {
+	}, [state.page, state.rowsPerPage, state.order, state.orderby]);
+
+	const rows = useMemo(() => {
 		return state.data.map((item) => {
-		  return {
-			item: item,
-			columns: [
-			  <span>
-				{item.firstName} {item.lastName}
-			  </span>,
-			  <span>{item.email}</span>,
-			  <span>
-				{item.image && item.image !== null && (
-				  <Box
-					component="img"
-					sx={{
-					  height: 50,
-					  width: 50,
-					  maxHeight: { xs: 25, md: 50 },
-					  maxWidth: { xs: 25, md: 50 },
-					}}
-					src={HELPER.getImageUrl(item.image)}
-				  />
-				)}
-			  </span>,
-			  <div>
-				<IconButton
-				  onClick={(e) =>
-					navigate(
-					  `${pageRoutes.master.user.userPermissions.split(":")[0]}${
-						item.id
-					  }`
-					)
-				  }
-				>
-				  <Icon color="warning">fingerprint</Icon>
-				</IconButton>
-				<IconButton >
-				  <Icon color="primary">edit</Icon>
-				</IconButton>
-				{/* <IconButton onClick={(e) => handleDelete(item.id)}>
-				  <Icon color="error">close</Icon>
-				</IconButton> */}
-			  </div>,
-			],
-		  };
+			return {
+				item: item,
+				columns: [
+					<span>{item.permissionName}</span>,
+					<span>{item.permissionGroup}</span>,
+
+				],
+			};
 		});
-	  }, [state.data]);
+	}, [state.data]);
 	// const handleChangePage = (_, newPage) => {
 	// 	setPage(newPage);
 	// 	getTableData(newPage);
@@ -169,8 +135,8 @@ const PermissionsMaster = () => {
 					]}
 				/>
 			</Box>
-			{/* <Box width="100%" overflow="auto">
-				<StyledTable>
+			<Box width="100%" overflow="auto">
+				{/* <StyledTable>
 					<TableHead>
 						<TableRow>
 							<TableCell align="left" width="30%">
@@ -199,25 +165,26 @@ const PermissionsMaster = () => {
 					onRowsPerPageChange={handleChangeRowsPerPage}
 					nextIconButtonProps={{ "aria-label": "Next Page" }}
 					backIconButtonProps={{ "aria-label": "Previous Page" }}
-				/>
-			</Box> */}
-			{/* <PaginationTable
-				header={COLUMNS}
-				// rows={rows}
-				totalItems={state.total_items}
-				perPage={state.rowsPerPage}
-				activePage={state.page}
-				checkboxColumn={false}
-				selectedRows={state.selectedRows}
-				enableOrder={true}
-				isLoader={state.loader}
-				// emptyTableImg={<img src={error400cover} width="350px" />}
-				{...otherTableActionProps}
-				orderBy={state.orderby}
-				order={state.order}
-			>
-				 */}
-			{/* </PaginationTable> */}
+				/> */}
+				<PaginationTable
+					header={COLUMNS}
+					rows={rows}
+					totalItems={state.total_items}
+					perPage={state.rowsPerPage}
+					activePage={state.page}
+					checkboxColumn={false}
+					selectedRows={state.selectedRows}
+					enableOrder={true}
+					isLoader={state.loader}
+					// emptyTableImg={<img src={error400cover} width="350px" />}
+					{...otherTableActionProps}
+					orderBy={state.orderby}
+					order={state.order}
+				>
+
+				</PaginationTable>
+			</Box>
+
 		</Container>
 	);
 };
