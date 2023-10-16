@@ -16,12 +16,6 @@ const initialValues = {
 	profile: "",
 };
 
-const header = {
-	headers: {
-		"Content-Type": "multipart/form-data",
-	},
-};
-
 const UserMasterDetails = ({ open, togglePopup, userData }) => {
 	const url = apiEndPoint.user;
 
@@ -45,14 +39,14 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 			fd.append(field, data[field]);
 		}
 		if (data.id === "") {
-			API.post(url, fd, header)
+			API.post(url, fd)
 				.then(() => {
 					HELPER.toaster.success("Record created");
 					togglePopup();
 				})
 				.catch((e) => HELPER.toaster.error(e.errors.message));
 		} else {
-			API.put(`${url}/${data.id}`, fd, header)
+			API.put(`${url}/${data.id}`, fd)
 				.then(() => {
 					HELPER.toaster.success("Record saved");
 					togglePopup();
@@ -89,59 +83,6 @@ const UserMasterDetails = ({ open, togglePopup, userData }) => {
 							isOpen={open}
 							onClose={togglePopup}
 							actionBtns={<>
-								{/* <Box sx={{ display: "flex", alignContent: "center", flexWrap: "unset" }}>
-									<TextField
-										id="icon-button-file"
-										fullWidth={true}
-										size="small"
-										type="file"
-										name="profile"
-										inputProps={{ accept: "image/*" }}
-										sx={{ mt: 1, mb: 2, display: "none" }}
-										onChange={(e) => {
-											formikProps.setFieldValue("profile", e.currentTarget.files[0]);
-										}}
-										onBlur={formikProps.handleBlur}
-										helperText={formikProps.touched.profile && formikProps.errors.profile}
-										error={Boolean(formikProps.errors.profile && formikProps.touched.profile)}
-									/>
-									<label htmlFor="icon-button-file">
-										<IconButton
-											color="primary"
-											id="profile"
-											component="span"
-											className="button"
-											onBlur={formikProps.handleBlur}
-											aria-label="Upload picture"
-											disableRipple={true}
-										>
-											{formState.profile && formState.profile !== null ? (
-												<Box
-													id="image"
-													component="img"
-													sx={{
-														height: 50,
-														width: 50,
-														maxHeight: { xs: 25, md: 50 },
-														maxWidth: { xs: 25, md: 50 },
-														...(Boolean(formikProps.errors.profile && formikProps.touched.profile) && {
-															border: "2px solid #FF3D57",
-														}),
-													}}
-													src={URL.createObjectURL(formState.profile)}
-													onError={(e) => {
-														e.target.src = "/assets/camera.svg";
-													}}
-												/>
-											) : (
-												<Icon>photo_camera</Icon>
-											)}
-										</IconButton>
-									</label>
-									{Boolean(formikProps.errors.profile && formikProps.touched.profile) && (
-										<p style={{ color: "#FF3D57", fontSize: "12px" }}>{formikProps.touched.profile && formikProps.errors.profile}</p>
-									)}
-								</Box> */}
 								<ImgUploadBoxInput 
 									name="profile"
 									onChange={onChange}

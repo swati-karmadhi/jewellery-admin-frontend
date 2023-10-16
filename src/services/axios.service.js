@@ -19,6 +19,12 @@ instance.interceptors.request.use(
 			config.headers.Authorization = `Bearer ${token}`;
 		}
 
+		if (config.method === "post" || config.method === "put") {
+			if (config.data instanceof FormData) {
+				config.headers["Content-Type"] = "multipart/form-data";
+			}
+		}
+
 		return config;
 	},
 	(error) => Promise.reject(error)

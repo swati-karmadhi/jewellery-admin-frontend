@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 
 export default function ThemeDialog({ isOpen, onClose, children, title, actionBtns }) {
-  console.log('isOpen', isOpen);
   return (
     <Dialog open={isOpen} onClose={onClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{title}</DialogTitle>
