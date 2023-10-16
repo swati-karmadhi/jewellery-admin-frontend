@@ -1,11 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
 	Box,
-	Button,
-	Dialog,
-	DialogActions,
-	DialogContent,
-	DialogTitle,
 	FormControlLabel,
 	Icon,
 	IconButton,
@@ -17,7 +12,6 @@ import {
 import { Breadcrumb, Container, StyledAddButton, StyledTable } from "../../../../components";
 import { apiEndPoint, pageRoutes } from "../../../../constants/routesList";
 import { API, HELPER } from "../../../../services";
-import * as CONFIG from "../../../../constants/config";
 import { useNavigate } from "react-router-dom";
 import UserMasterDetails from "./UserMasterDetails";
 import PaginationTable, { usePaginationTable } from "../../../../components/UI/Pagination/PaginationTable";
